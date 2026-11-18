@@ -6,3 +6,8 @@ dialog{border:0;padding:0;border-radius:9px;color:#27271f;background:#f8f7f2;wid
 @media(max-width:360px){#grid{grid-template-columns:1fr}}
 #notes details{border-top:1px solid #d2d0c6;margin:12px 0;padding-top:10px}#notes summary{cursor:pointer;font-size:14px;font-weight:650}#notes p{white-space:pre-line;font-size:14px;line-height:1.85;color:#55564e}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card-art img{transition:none}}
+
+img,video{-webkit-touch-callout:none}
+#gallery-tools #full-image{width:auto;height:auto;padding:8px 13px;border-radius:20px;text-decoration:none}
+#main-preview.expanded{max-height:63dvh;overflow:auto;overscroll-behavior:contain;background:#e8e6df}
+#main-preview.expanded .picture{width:auto;height:auto;max-width:none;max-height:none;margin:auto}

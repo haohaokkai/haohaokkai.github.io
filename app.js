@@ -53,11 +53,24 @@ function renderNotes(p){
  const panel=document.getElementById('notes');panel.replaceChildren();if(p.id!=='lanqiao')return;
  for(const [title,body] of designNotes){const d=make('details');d.append(make('summary','',title),make('p','',body));panel.append(d)}
 }
+function setImageZoom(expanded){
+ const preview=$('main-preview');
+ preview.classList.toggle('expanded',expanded);
+ preview.scrollTop=preview.scrollLeft=0;
+ $('full-image').setAttribute('aria-pressed',String(expanded));
+ $('full-image').textContent=expanded?'缩回预览':'查看大图';
+}
+$('full-image').onclick=()=>setImageZoom(!$('main-preview').classList.contains('expanded'));
+for(const eventName of ['contextmenu','dragstart']){
+ document.addEventListener(eventName,event=>{
+  if(event.target instanceof Element && event.target.closest('img,video'))event.preventDefault();
+ });
+}
 function updateImage(i){
  const pics=activeWork.images;imageIndex=(i+pics.length)%pics.length;const [src,label]=pics[imageIndex];
  const img=make('img','picture');img.src=src;img.alt=label;$('main-preview').replaceChildren(img);
- $('page-no').textContent=(imageIndex+1)+' / '+pics.length;$('full-image').href=src;
- $('full-image').setAttribute('aria-label','查看大图 · '+label);
+ $('page-no').textContent=(imageIndex+1)+' / '+pics.length;
+ setImageZoom(false);
  for(const [j,b] of [...$('thumbs').children].entries())b.setAttribute('aria-current',j===imageIndex);
  $('image-prev').hidden=$('image-next').hidden=pics.length<2;
 }
@@ -67,8 +80,9 @@ function show(p){
  $('view-title').textContent=p.title;$('view-type').textContent=categories[p.category].title+'　/　'+p.series;
  $('view-desc').textContent=p.desc;$('main-preview').replaceChildren();$('thumbs').replaceChildren();
  $('links').replaceChildren(...(p.links||[]).map(([label,url])=>{const a=make('a','',label+' ↗');a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a}));
+ setImageZoom(false);
  $('gallery-tools').hidden=!p.images;
- if(p.video){const v=make('video');v.src=p.video;v.poster=p.cover;v.controls=true;v.playsInline=true;v.preload='metadata';v.setAttribute('aria-label',p.title);$('main-preview').append(v)}
+ if(p.video){const v=make('video');v.src=p.video;v.poster=p.cover;v.controls=true;v.setAttribute('controlslist','nodownload');v.playsInline=true;v.preload='metadata';v.setAttribute('aria-label',p.title);$('main-preview').append(v)}
  else{if(p.images.length>1)p.images.forEach(([src,label],i)=>{const b=make('button');b.setAttribute('aria-label',label);b.onclick=()=>updateImage(i);const img=make('img');img.src=src;img.alt='';img.loading='lazy';b.append(img);$('thumbs').append(b)});updateImage(0)}
  if(!dialog.open)dialog.showModal();dialog.scrollTop=0;$('close').focus({preventScroll:true});
 }
